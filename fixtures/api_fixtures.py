@@ -9,7 +9,7 @@ from tests.data.test_data import TEST_CARD
 
 
 @pytest.fixture(scope="function")
-def buy_premium():
+def premium_disabled():
     with requests.Session() as lavka_session:
         lavka_session.headers.update({"trainer_token": os.getenv("POKEMONBATTLE_TOKEN")})
         # отменяем премиум на случай, если он был до выполнения теста
@@ -20,7 +20,7 @@ def buy_premium():
 
 
 @pytest.fixture(scope="function")
-def cancel_premium():
+def premium_enabled():
     with requests.Session() as lavka_session:
         lavka_session.headers.update({"trainer_token": os.getenv("POKEMONBATTLE_TOKEN")})
         lavka_session.post((os.getenv("LAVKA_URL") + "/cancel_premium"))

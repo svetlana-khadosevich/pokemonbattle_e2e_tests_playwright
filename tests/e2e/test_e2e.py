@@ -11,19 +11,19 @@ from tests.data.test_data import TEST_CARD
 # 1. переход на страницу тренера с главной
 def test_go_to_trainer_page(authorized_page):
     page = authorized_page
-    expect(page.get_by_role("link", name=f"ID {os.getenv("TRAINER_ID")} логотип")).to_be_visible()
-    page.get_by_role("link", name=f"ID {os.getenv("TRAINER_ID")} логотип").click()
-    page.wait_for_url(f"https://pokemonbattle.ru/trainer/{os.getenv("TRAINER_ID")}")
+    expect(page.get_by_role("link", name=f"ID {os.getenv('TRAINER_ID')} логотип")).to_be_visible()
+    page.get_by_role("link", name=f"ID {os.getenv('TRAINER_ID')} логотип").click()
+    page.wait_for_url(f"https://pokemonbattle.ru/trainer/{os.getenv('TRAINER_ID')}")
 
 
 # 2. переход со страницы тренера в раздел покупки Премиума
 def test_go_to_premium_page(authorized_page):
     page = authorized_page
-    page.goto(f"https://pokemonbattle.ru/trainer/{os.getenv("TRAINER_ID")}")
-    expect(page.get_by_role("link", name=f"ID {os.getenv("TRAINER_ID")} логотип")).to_be_visible()
+    page.goto(f"https://pokemonbattle.ru/trainer/{os.getenv('TRAINER_ID')}")
+    expect(page.get_by_role("link", name=f"ID {os.getenv('TRAINER_ID')} логотип")).to_be_visible()
     # переход на страницу тренера
-    page.get_by_role("link", name=f"ID {os.getenv("TRAINER_ID")} логотип").click()
-    page.wait_for_url(f"https://pokemonbattle.ru/trainer/{os.getenv("TRAINER_ID")}")
+    page.get_by_role("link", name=f"ID {os.getenv('TRAINER_ID')} логотип").click()
+    page.wait_for_url(f"https://pokemonbattle.ru/trainer/{os.getenv('TRAINER_ID')}")
     # переход со страницы тренера в раздел покупки Премиума
     expect(page.get_by_text("Pokemon Premium", exact=True)).to_be_visible()
     page.locator('[data-qa="premium"]').click()
@@ -33,15 +33,15 @@ def test_go_to_premium_page(authorized_page):
 # 3. проверка активности ачивки «Начало большого пути»
 def test_check_achievement(authorized_page):
     page = authorized_page
-    page.goto(f"https://pokemonbattle.ru/trainer/{os.getenv("TRAINER_ID")}")
-    expect(page.get_by_role("link", name=f"ID {os.getenv("TRAINER_ID")} логотип")).to_be_visible()
-    page.get_by_role("link", name=f"ID {os.getenv("TRAINER_ID")} логотип").click()
-    page.wait_for_url(f"https://pokemonbattle.ru/trainer/{os.getenv("TRAINER_ID")}")
+    page.goto(f"https://pokemonbattle.ru/trainer/{os.getenv('TRAINER_ID')}")
+    expect(page.get_by_role("link", name=f"ID {os.getenv('TRAINER_ID')} логотип")).to_be_visible()
+    page.get_by_role("link", name=f"ID {os.getenv('TRAINER_ID')} логотип").click()
+    page.wait_for_url(f"https://pokemonbattle.ru/trainer/{os.getenv('TRAINER_ID')}")
     expect(page.locator("#beginning")).to_have_class(re.compile(r"\bactive\b"))
 
 
 # 4. Покупка Премиум
-def test_buy_premium(authorized_page, buy_premium):
+def test_buy_premium(authorized_page, premium_disabled):
     page = authorized_page
     page.goto("https://pokemonbattle.ru/premium")
     page.wait_for_url("https://pokemonbattle.ru/premium")
@@ -68,7 +68,7 @@ def test_buy_premium(authorized_page, buy_premium):
 
 
 # 5. Отмена Премиум
-def test_cancel_premium(authorized_page, cancel_premium):
+def test_cancel_premium(authorized_page, premium_enabled):
     page = authorized_page
     page.goto("https://pokemonbattle.ru/premium")
     page.wait_for_url("https://pokemonbattle.ru/premium")

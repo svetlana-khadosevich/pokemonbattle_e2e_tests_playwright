@@ -1,11 +1,7 @@
 import os
 
-import allure
-
 import requests
 import pytest
-
-from tests.data.test_data import TEST_CARD
 
 
 @pytest.fixture(scope="function")
@@ -29,12 +25,12 @@ def premium_enabled():
                                           "order_type": "premium",
                                           "details":
                                               {
-                                                  "card_number": TEST_CARD["number"],
-                                                  "secure_code": TEST_CARD["3ds_code"],
-                                                  "card_name": TEST_CARD["name"],
-                                                  "card_cvv": TEST_CARD["cvv"],
-                                                  "card_actual": TEST_CARD["date"],
-                                                  "days": TEST_CARD["days"]
+                                                  "card_number": (os.getenv("CARD_NUMBER")),
+                                                  "secure_code": (os.getenv("CARD_3DS_CODE")),
+                                                  "card_name": (os.getenv("CARD_NAME")),
+                                                  "card_cvv": (os.getenv("CARD_CVV")),
+                                                  "card_actual": (os.getenv("CARD_DATE")),
+                                                  "days": (os.getenv("DAYS"))
                                               }
                                       }
                                       )

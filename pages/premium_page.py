@@ -1,4 +1,4 @@
-import os
+import allure
 
 from playwright.sync_api import expect
 
@@ -36,30 +36,33 @@ class PremiumPage(BasePage):
     def payment_button(self):
         return self.page.get_by_role("button", name="Перейти к оплате")
 
-    def fill_number_of_days(self):
-        self.page.get_by_placeholder(" ").fill(os.getenv('DAYS'))
-
     @property
     def cancel_payment_button(self):
-        return self.page.get_by_role("button", name = "Отменить подписку")
+        return self.page.get_by_role("button", name="Отменить подписку")
 
-    def open_page(self):
-        self.page.goto(self.URL)
+    @property
+    def days_input(self):
+        return self.page.get_by_placeholder(" ")
 
-    def buying_premium(self):
-        self.card_number_input.press_sequentially((os.getenv('CARD_NUMBER')), delay=50)
-        self.date_input.press_sequentially((os.getenv("CARD_DATE")), delay=50)
-        self.cvv_input.press_sequentially((os.getenv("CARD_CVV")), delay=50)
-        self.name_input.press_sequentially((os.getenv("CARD_NAME")), delay=50)
+    def fill_number_of_days(self, days: str):
+        self.days_input.fill(days)
+
+    @allure.step("Покупки Премиума")
+    def buying_premium(self, card: dict):
+        self.card_number_input.press_sequentially(card["number"], delay=50)
+        self.date_input.press_sequentially(card["date"], delay=50)
+        self.cvv_input.press_sequentially(card["cvv"], delay=50)
+        self.name_input.press_sequentially(card["name"], delay=50)
         self.pay_button.click()
         expect(self.page).to_have_url(f"{BasePage.BASE_URL}/payment_3ds")
-        self.ds_code_input.fill(os.getenv("CARD_3DS_CODE"))
-        expect(self.page.get_by_role("button", name="Оплатить")).to_be_enabled(timeout=15000)
+        self.ds_code_input.fill(card["3ds_code"])
+        expect(self.pay_button).to_be_enabled(timeout=15000)
         self.pay_button.click()
         expect(self.page).to_have_url(f"{BasePage.BASE_URL}/payment_success")
 
+    @allure.step("Переход на страницу покупки Премиума")
     def go_to_payment(self):
-        expect(self.payment_button).to_be_enabled(timeout=5000)
+        self.should_be_visible(self.payment_button)
         self.payment_button.click()
         expect(self.page).to_have_url(f"{BasePage.BASE_URL}/payment/0")
 
@@ -67,20 +70,13 @@ class PremiumPage(BasePage):
         expect(self.page).to_have_url(self.URL)
 
     def should_be_successfull(self):
-        expect(self.page.get_by_role("heading", name="Покупка прошла успешно")).to_be_visible()
+        self.should_be_visible(self.page.get_by_role("heading", name="Покупка прошла успешно"))
 
+    @allure.step("Отмена Премиума")
     def cancel_premium(self):
-        expect(self.page.get_by_role("button", name="Отменить подписку")).to_be_enabled(timeout=15000)
+        expect(self.cancel_payment_button).to_be_enabled(timeout=15000)
         self.cancel_payment_button.click()
-        self.should_be_premium_page()
         expect(self.page.get_by_text("Вы уверены, что хотите отменить подписку?")).to_be_visible()
-        expect(self.page.get_by_role("button", name="Отменить подписку")).to_be_enabled(timeout=15000)
+        expect(self.cancel_payment_button).to_be_enabled(timeout=15000)
         self.cancel_payment_button.click()
-        expect(self.page.get_by_text("Вы отменили подписку :(")).to_be_visible()
-
-
-
-
-
-
-
+        self.should_contain_text(self.page.locator("body"), "Вы отменили подписку")

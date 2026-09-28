@@ -3,6 +3,8 @@ import os
 import requests
 import pytest
 
+from tests.data.test_data import DAYS, CARD
+
 
 @pytest.fixture(scope="function")
 def premium_disabled():
@@ -25,12 +27,12 @@ def premium_enabled():
                                           "order_type": "premium",
                                           "details":
                                               {
-                                                  "card_number": (os.getenv("CARD_NUMBER")),
-                                                  "secure_code": (os.getenv("CARD_3DS_CODE")),
-                                                  "card_name": (os.getenv("CARD_NAME")),
-                                                  "card_cvv": (os.getenv("CARD_CVV")),
-                                                  "card_actual": (os.getenv("CARD_DATE")),
-                                                  "days": (os.getenv("DAYS"))
+                                                  "card_number": CARD["number"],
+                                                  "secure_code": CARD["3ds_code"],
+                                                  "card_name": CARD["name"],
+                                                  "card_cvv": CARD["cvv"],
+                                                  "card_actual": CARD["date"],
+                                                  "days": DAYS
                                               }
                                       }
                                       )

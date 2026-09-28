@@ -16,6 +16,6 @@ class MainPage(BasePage):
     def should_be_main_page(self):
         expect(self.page).to_have_url(f"{self.URL}/")
 
-
-
-
+    def go_to_trainer_page(self):
+        self.should_be_visible(self.trainer_badge)
+        self.trainer_badge.click()

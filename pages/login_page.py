@@ -1,5 +1,7 @@
 import os
 
+import allure
+
 from dotenv import load_dotenv
 from playwright.sync_api import expect
 
@@ -21,9 +23,7 @@ class LoginPage(BasePage):
     def login_button(self):
         return self.page.get_by_role("button", name="Войти")
 
-    def open_page(self):
-        self.page.goto(self.URL)
-
+    @allure.step("Авторизация пользователя")
     def login(self, email=None, password=None):
         if email is None or password is None:
             load_dotenv()
@@ -34,4 +34,3 @@ class LoginPage(BasePage):
 
     def should_be_login_page(self):
         expect(self.page).to_have_url(self.URL)
-

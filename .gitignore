@@ -28,3 +28,7 @@ playwright/.cache/
 
 # Logs
 *.log
+
+allure-results
+allure-report
+

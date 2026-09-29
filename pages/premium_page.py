@@ -47,7 +47,7 @@ class PremiumPage(BasePage):
     def fill_number_of_days(self, days: str):
         self.days_input.fill(days)
 
-    @allure.step("Покупки Премиума")
+    @allure.step("Покупка Премиума")
     def buying_premium(self, card: dict):
         self.card_number_input.press_sequentially(card["number"], delay=50)
         self.date_input.press_sequentially(card["date"], delay=50)

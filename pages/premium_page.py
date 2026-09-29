@@ -44,16 +44,38 @@ class PremiumPage(BasePage):
     def days_input(self):
         return self.page.get_by_placeholder(" ")
 
-    def fill_number_of_days(self, days: str):
-        self.days_input.fill(days)
+    @property
+    def premium_days_block(self):
+        return self.page.locator(".k_page_main_premium")
 
-    @allure.step("Покупка Премиума")
-    def buying_premium(self, card: dict):
+    @property
+    def premium_cost(self):
+        return self.page.locator(".k_skidka_premium")
+
+    @property
+    def payment_form(self):
+        return self.page.locator(".payment_form_card_form")
+
+    def should_be_premium_cost_visible(self):
+        expect(self.premium_cost).to_have_attribute("style", "")
+
+    def fill_number_of_days(self, days: str):
+        self.days_input.press_sequentially(days, delay=50)
+
+    @allure.step("Покупка Премиума - ввод данных карты")
+    def buying_premium_card_data(self, card: dict):
         self.card_number_input.press_sequentially(card["number"], delay=50)
         self.date_input.press_sequentially(card["date"], delay=50)
         self.cvv_input.press_sequentially(card["cvv"], delay=50)
         self.name_input.press_sequentially(card["name"], delay=50)
+
+    @allure.step("Покупка Премиума - переход к странице ввода 3ds-кода")
+    def buying_premium_3ds_page(self):
         self.pay_button.click()
+        expect(self.page).to_have_url(f"{BasePage.BASE_URL}/payment_3ds")
+
+    @allure.step("Покупка Премиума - ввод 3ds-кода")
+    def buying_premium_3ds_code(self, card: dict):
         expect(self.page).to_have_url(f"{BasePage.BASE_URL}/payment_3ds")
         self.ds_code_input.fill(card["3ds_code"])
         expect(self.pay_button).to_be_enabled(timeout=15000)
@@ -68,6 +90,12 @@ class PremiumPage(BasePage):
 
     def should_be_premium_page(self):
         expect(self.page).to_have_url(self.URL)
+
+    def should_be_error_message_card_number(self):
+        self.should_be_visible(self.page.get_by_text("Неверный номер карты"))
+
+    def should_be_error_message_card_date(self):
+        self.should_be_visible(self.page.get_by_text("Неверный срок"))
 
     def should_be_successfull(self):
         self.should_be_visible(self.page.get_by_role("heading", name="Покупка прошла успешно"))

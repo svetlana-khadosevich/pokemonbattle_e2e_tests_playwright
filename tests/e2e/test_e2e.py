@@ -57,7 +57,9 @@ class TestPremium:
         premium_page.should_be_premium_page()
         premium_page.fill_number_of_days(DAYS)
         premium_page.go_to_payment()
-        premium_page.buying_premium(CARD)
+        premium_page.buying_premium_card_data(CARD)
+        premium_page.buying_premium_3ds_page()
+        premium_page.buying_premium_3ds_code(CARD)
         premium_page.should_be_successfull()
         with allure.step("Проверка отмены премиума через API-запрос /me"):
             me = requests.get(os.getenv("POKEMON_URL") + "/v2/me",

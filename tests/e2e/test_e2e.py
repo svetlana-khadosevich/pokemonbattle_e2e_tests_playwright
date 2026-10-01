@@ -1,4 +1,5 @@
 import os
+import pytest
 import requests
 import allure
 
@@ -12,6 +13,7 @@ from tests.data.test_data import DAYS, CARD
 @allure.suite("Тесты со страницы тренера")
 class TestTrainerPage:
     @allure.title("Переход на страницу тренера с главной")
+    @pytest.mark.ui
     def test_go_to_trainer_page(self, authorized_page):
         page = authorized_page
         main_page = MainPage(page)
@@ -19,8 +21,8 @@ class TestTrainerPage:
         main_page.go_to_trainer_page()
         trainer_page.should_be_trainer_page()
 
-
     @allure.title("Переход со страницы тренера в раздел покупки Премиума")
+    @pytest.mark.ui
     def test_go_to_premium_page(self, authorized_page):
         page = authorized_page
         main_page = MainPage(page)
@@ -35,8 +37,8 @@ class TestTrainerPage:
         trainer_page.go_to_premium()
         premium_page.should_be_premium_page()
 
-
     @allure.title("Проверка активности ачивки «Начало большого пути»")
+    @pytest.mark.ui
     def test_check_achievement(self, authorized_page):
         page = authorized_page
         main_page = MainPage(page)
@@ -57,14 +59,15 @@ class TestPremium:
         premium_page.should_be_premium_page()
         premium_page.fill_number_of_days(DAYS)
         premium_page.go_to_payment()
-        premium_page.buying_premium(CARD)
+        premium_page.buying_premium_card_data(CARD)
+        premium_page.buying_premium_3ds_page()
+        premium_page.buying_premium_3ds_code(CARD)
         premium_page.should_be_successfull()
         with allure.step("Проверка отмены премиума через API-запрос /me"):
             me = requests.get(os.getenv("POKEMON_URL") + "/v2/me",
                               headers={"trainer_token": os.getenv("POKEMONBATTLE_TOKEN")})
             body = me.json()
             assert body["data"][0]["is_premium"] is True
-
 
     @allure.title("Отмена Премиум")
     def test_cancel_premium(self, authorized_page, premium_enabled):

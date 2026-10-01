@@ -6,7 +6,6 @@ from pages.login_page import LoginPage
 from pages.main_page import MainPage
 
 
-
 @pytest.fixture(scope="function")
 def authorized_page(page: Page):
     login_page = LoginPage(page)
